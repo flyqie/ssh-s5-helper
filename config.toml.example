@@ -1,0 +1,14 @@
+# SSH SOCKS5 Helper 配置文件示例
+# 将此文件复制到可执行文件同目录下并重命名为 config.toml
+
+[SSH]
+Host = "192.168.1.100"
+Port = 22
+User = "your_username"
+Password = "your_password"
+
+[SOCKS5]
+ListenAddr = "127.0.0.1:1080"
+
+# 是否强制检查 host key（默认 false）
+ForceCheckHostKey = false

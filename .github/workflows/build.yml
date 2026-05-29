@@ -1,0 +1,56 @@
+name: Build
+
+on:
+  push:
+
+env:
+  GO_VERSION: '1.24'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            ext: .exe
+            gui_ldflags: "-H windowsgui"
+          - os: ubuntu-latest
+            ext: ""
+            gui_ldflags: ""
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: false
+
+      - name: Install dependencies (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get update && sudo apt-get install -y gcc libgtk-3-dev libayatana-appindicator3-dev
+
+      - name: Add mingw to PATH (Windows)
+        if: matrix.os == 'windows-latest'
+        run: echo "C:/msys64/mingw64/bin" >> $env:GITHUB_PATH
+
+      - name: Get dependencies
+        run: go mod download
+
+      - name: Build GUI
+        run: go build -ldflags "${{ matrix.gui_ldflags }}" -o ssh_s5_helper_gui${{ matrix.ext }} ./cmd/gui
+
+      - name: Build CLI
+        run: go build -o ssh_s5_helper_cli${{ matrix.ext }} ./cmd/cli
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.os }}-artifacts
+          path: |
+            ssh_s5_helper_gui${{ matrix.ext }}
+            ssh_s5_helper_cli${{ matrix.ext }}
+          retention-days: 1
