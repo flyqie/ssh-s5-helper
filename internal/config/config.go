@@ -13,6 +13,8 @@ import (
 
 var encryptKey = "helloworld"
 
+var Version string
+
 type Config struct {
 	SSH               SSHConfig
 	SOCKS5            SOCKS5Config
@@ -39,12 +41,12 @@ var (
 )
 
 type Args struct {
-	SSHHost             string
-	SSHPort             int
-	SSHUser             string
-	SSHPassword         string
-	SOCKS5Listen        string
-	ForceCheckHostKey   bool
+	SSHHost           string
+	SSHPort           int
+	SSHUser           string
+	SSHPassword       string
+	SOCKS5Listen      string
+	ForceCheckHostKey bool
 }
 
 type Loader struct{}

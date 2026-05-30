@@ -35,6 +35,9 @@ func main() {
 		systray.SetIcon(iconData)
 		mState := systray.AddMenuItem("连接状态", "连接状态")
 		mCopy := systray.AddMenuItem("复制socks5地址", "复制socks5地址")
+		if config.Version != "" {
+			_ = systray.AddMenuItem("软件版本: "+config.Version, "软件版本")
+		}
 		mQuit := systray.AddMenuItem("退出", "退出")
 
 		updateMenu := func(state gui.State) {
@@ -53,12 +56,12 @@ func main() {
 				case <-mState.ClickedCh:
 					if app.GetState() == gui.StateIdle || app.GetState() == gui.StateDisconnected {
 						app.Start(ctx, proxy.Config{
-							SSHHost:          cfg.SSH.Host,
-							SSHPort:          cfg.SSH.Port,
-							SSHUser:          cfg.SSH.User,
-							SSHPassword:      cfg.SSH.Password,
+							SSHHost:           cfg.SSH.Host,
+							SSHPort:           cfg.SSH.Port,
+							SSHUser:           cfg.SSH.User,
+							SSHPassword:       cfg.SSH.Password,
 							ForceCheckHostKey: cfg.ForceCheckHostKey,
-							SOCKS5Listen:     cfg.SOCKS5.ListenAddr,
+							SOCKS5Listen:      cfg.SOCKS5.ListenAddr,
 						})
 					}
 
