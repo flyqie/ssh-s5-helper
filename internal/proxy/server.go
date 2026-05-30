@@ -17,8 +17,19 @@ import (
 
 const (
 	logFileName = "ssh_s5_helper.log"
-	maxLogSize = 2 * 1024 * 1024
+	maxLogSize  = 2 * 1024 * 1024
 )
+
+// remoteResolver delegates DNS resolution to the SSH server-side,
+// enabling remote DNS resolution for domain names.
+type remoteResolver struct{}
+
+func (r *remoteResolver) Resolve(ctx context.Context, name string) (context.Context, net.IP, error) {
+	// Return nil IP - the SOCKS5 library will use the FQDN directly when dialing.
+	// Since the dial goes through sshClient.Dial() which tunnels through SSH,
+	// DNS resolution happens on the remote SSH server side.
+	return ctx, nil, nil
+}
 
 type Server struct {
 	socks5Server *socks5.Server
@@ -54,9 +65,12 @@ func New(cfg Config) (*Server, error) {
 
 	log.Printf("[INFO] SSH connection established %s:%d (user: %s)", cfg.SSHHost, cfg.SSHPort, cfg.SSHUser)
 
-	socks5Server := socks5.NewServer(socks5.WithDial(func(_ context.Context, network, addr string) (net.Conn, error) {
-		return sshClient.Dial(network, addr)
-	}))
+	socks5Server := socks5.NewServer(
+		socks5.WithResolver(&remoteResolver{}),
+		socks5.WithDial(func(_ context.Context, network, addr string) (net.Conn, error) {
+			return sshClient.Dial(network, addr)
+		}),
+	)
 
 	return &Server{
 		socks5Server: socks5Server,
