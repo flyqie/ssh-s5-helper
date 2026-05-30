@@ -35,8 +35,8 @@ func main() {
 		systray.SetIcon(iconData)
 		mState := systray.AddMenuItem("连接状态", "连接状态")
 		mCopy := systray.AddMenuItem("复制socks5地址", "复制socks5地址")
-		if config.Version != "" {
-			_ = systray.AddMenuItem("软件版本: "+config.Version, "软件版本")
+		if config.SWVersion != "" {
+			_ = systray.AddMenuItem("软件版本: "+config.SWVersion, "软件版本")
 		}
 		mQuit := systray.AddMenuItem("退出", "退出")
 

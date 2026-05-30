@@ -86,8 +86,8 @@ func run(cmd *cobra.Command, _ []string) {
 		cancel()
 	}()
 
-	if config.Version != "" {
-		log("[INFO] Software Version: %s", config.Version)
+	if config.SWVersion != "" {
+		log("[INFO] Software Version: %s", config.SWVersion)
 	}
 	log("[INFO] SSH SOCKS5 Proxy started")
 	log("[INFO] SSH: %s:%d (user: %s)", cfg.SSH.Host, cfg.SSH.Port, cfg.SSH.User)

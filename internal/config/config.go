@@ -13,7 +13,7 @@ import (
 
 var encryptKey = "helloworld"
 
-var Version string
+var SWVersion string
 
 type Config struct {
 	SSH               SSHConfig

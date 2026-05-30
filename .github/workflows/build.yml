@@ -38,14 +38,18 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: echo "C:/msys64/mingw64/bin" >> $env:GITHUB_PATH
 
+      - name: Set version
+        run: echo "VERSION_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+        shell: bash
+
       - name: Get dependencies
         run: go mod download
 
       - name: Build GUI
-        run: go build -ldflags "${{ matrix.gui_ldflags }}" -o ssh_s5_helper_gui${{ matrix.ext }} ./cmd/gui
+        run: go build -ldflags "-X internal/config.SWVersion=${{ env.VERSION_SHA }} ${{ matrix.gui_ldflags }}" -o ssh_s5_helper_gui${{ matrix.ext }} ./cmd/gui
 
       - name: Build CLI
-        run: go build -o ssh_s5_helper_cli${{ matrix.ext }} ./cmd/cli
+        run: go build -ldflags "-X internal/config.SWVersion=${{ env.VERSION_SHA }}" -o ssh_s5_helper_cli${{ matrix.ext }} ./cmd/cli
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
