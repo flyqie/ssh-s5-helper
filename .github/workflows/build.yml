@@ -46,10 +46,10 @@ jobs:
         run: go mod download
 
       - name: Build GUI
-        run: go build -ldflags "-X internal/config.SWVersion=${{ env.VERSION_SHA }} ${{ matrix.gui_ldflags }}" -o ssh_s5_helper_gui${{ matrix.ext }} ./cmd/gui
+        run: go build -ldflags "-X github.com/flyqie/ssh-s5-helper/internal/config.SWVersion=${{ env.VERSION_SHA }} ${{ matrix.gui_ldflags }}" -o ssh_s5_helper_gui${{ matrix.ext }} ./cmd/gui
 
       - name: Build CLI
-        run: go build -ldflags "-X internal/config.SWVersion=${{ env.VERSION_SHA }}" -o ssh_s5_helper_cli${{ matrix.ext }} ./cmd/cli
+        run: go build -ldflags "-X github.com/flyqie/ssh-s5-helper/internal/config.SWVersion=${{ env.VERSION_SHA }}" -o ssh_s5_helper_cli${{ matrix.ext }} ./cmd/cli
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
